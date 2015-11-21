@@ -38,25 +38,23 @@ import org.neo4j.driver.v1.Config;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Result;
+import org.neo4j.driver.v1.internal.ConfigTest;
 import org.neo4j.driver.v1.internal.connector.socket.SSLSocketChannel;
 import org.neo4j.driver.v1.internal.spi.Logger;
+import org.neo4j.driver.v1.internal.util.CertificateTool;
+import org.neo4j.driver.v1.util.CertificateToolTest;
 import org.neo4j.driver.v1.util.Neo4jRunner;
 import org.neo4j.driver.v1.util.Neo4jSettings;
 import org.neo4j.driver.v1.util.TestNeo4j;
-import org.neo4j.driver.v1.internal.ConfigTest;
-import org.neo4j.driver.v1.internal.util.CertificateTool;
-import org.neo4j.driver.v1.util.CertificateToolTest;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
-import static org.neo4j.driver.v1.internal.util.CertificateTool.saveX509Cert;
 
 public class SSLSocketChannelIT
 {
@@ -232,7 +230,7 @@ public class SSLSocketChannelIT
 
         Result result = driver.session().run( "RETURN 1" );
         assertTrue( result.next() );
-        assertEquals( 1, result.get( 0 ).javaInteger() );
+        assertEquals( 1, result.value( 0 ).javaInteger() );
         assertFalse( result.next() );
 
         driver.close();

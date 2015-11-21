@@ -16,11 +16,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neo4j.driver.v1;
+package org.neo4j.driver.v1.internal;
 
-/**
- * A record is an immutable record view
- */
-public interface Record extends RecordView {
-    // intentionally empty
+import java.util.List;
+
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.Value;
+
+public class EmptyRecord implements Record
+{
+    private final List<String> keys;
+
+    EmptyRecord( List<String> keys )
+    {
+        this.keys = keys;
+    }
+
+    @Override
+    public Iterable<String> keys()
+    {
+        return keys;
+    }
+
+    @Override
+    public Value value( String key )
+    {
+        return null;
+    }
+
+    @Override
+    public int numberOfFields()
+    {
+        return keys.size();
+    }
+
+    @Override
+    public Value value( int index )
+    {
+        return null;
+    }
+
+    @Override
+    public Record record()
+    {
+        return this;
+    }
 }

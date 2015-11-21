@@ -37,7 +37,7 @@ package org.neo4j.driver.v1;
  * }
  * </pre>
  */
-public interface Transaction extends AutoCloseable, StatementRunner
+public interface Transaction extends Resource, StatementRunner
 {
     /**
      * Mark this transaction as successful. You must call this method before calling {@link #close()} to have your

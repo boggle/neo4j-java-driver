@@ -52,7 +52,7 @@ import org.neo4j.driver.v1.internal.spi.ConnectionPool;
  * List<String> names = new LinkedList<>();
  * while( result.next() )
  * {
- *     names.add( result.get("n.name").javaString() );
+ *     names.add( result.value("n.name").javaString() );
  * }
  *
  * // Sessions are pooled, to avoid the overhead of creating new connections - this means

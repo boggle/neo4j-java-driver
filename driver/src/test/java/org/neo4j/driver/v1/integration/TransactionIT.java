@@ -27,10 +27,10 @@ import org.neo4j.driver.v1.Transaction;
 import org.neo4j.driver.v1.exceptions.ClientException;
 import org.neo4j.driver.v1.util.TestNeo4jSession;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TransactionIT
 {
@@ -52,7 +52,8 @@ public class TransactionIT
 
         // Then the outcome of both statements should be visible
         Result result = session.run( "MATCH (n) RETURN count(n)" );
-        long nodes = result.single().get( "count(n)" ).javaLong();
+        assertTrue( result.single() );
+        long nodes = result.value( "count(n)" ).javaLong();
         assertThat( nodes, equalTo( 2l ) );
     }
 
@@ -67,7 +68,9 @@ public class TransactionIT
         }
 
         // Then there should be no visible effect of the transaction
-        long nodes = session.run( "MATCH (n) RETURN count(n)" ).single().get( "count(n)" ).javaLong();
+        Result cursor = session.run( "MATCH (n) RETURN count(n)" );
+        assertTrue( cursor.single() );
+        long nodes = cursor.value( "count(n)" ).javaLong();
         assertThat( nodes, equalTo( 0l ) );
     }
 
@@ -83,7 +86,8 @@ public class TransactionIT
             Result res = tx.run( "MATCH (n) RETURN n.name" );
 
             // Then
-            assertThat( res.single().get( "n.name" ).javaString(), equalTo( "Steve Brook" ) );
+            assertTrue( res.single() );
+            assertThat( res.value( "n.name" ).javaString(), equalTo( "Steve Brook" ) );
         }
     }
 

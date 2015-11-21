@@ -18,8 +18,10 @@
  */
 package org.neo4j.driver.v1.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.neo4j.driver.v1.Record;
@@ -27,37 +29,49 @@ import org.neo4j.driver.v1.Value;
 
 public class SimpleRecord implements Record
 {
-    private final Map<String,Integer> fieldLookup;
-    private final Value[] fields;
+    private final List<String> keys;
+    private final Map<String, Integer> keyIndexLookup;
+    private final Value[] values;
 
     public static Record record( Object... alternatingFieldNameValue )
     {
-        Map<String,Integer> lookup = new HashMap<>();
-        Value[] fields = new Value[alternatingFieldNameValue.length / 2];
+        int length = alternatingFieldNameValue.length / 2;
+        List<String> keys = new ArrayList<>( length );
+        Map<String, Integer> keyIndexLookup = new HashMap<>( length );
+        Value[] fields = new Value[length];
         for ( int i = 0; i < alternatingFieldNameValue.length; i += 2 )
         {
-            lookup.put( alternatingFieldNameValue[i].toString(), i / 2 );
+            String key = alternatingFieldNameValue[i].toString();
+            keys.add( key  );
+            keyIndexLookup.put( key, i / 2 );
             fields[i / 2] = (Value) alternatingFieldNameValue[i + 1];
         }
-        return new SimpleRecord( lookup, fields );
+        return new SimpleRecord( keys, keyIndexLookup, fields );
     }
 
-    public SimpleRecord( Map<String,Integer> fieldLookup, Value[] fields )
+    public SimpleRecord( List<String> keys, Map<String, Integer> keyIndexLookup, Value[] values )
     {
-        this.fieldLookup = fieldLookup;
-        this.fields = fields;
-    }
-
-    @Override
-    public Value get( int fieldIndex )
-    {
-        return fields[fieldIndex];
+        this.keys = keys;
+        this.keyIndexLookup = keyIndexLookup;
+        this.values = values;
     }
 
     @Override
-    public Value get( String fieldName )
+    public Value value( int index )
     {
-        Integer fieldIndex = fieldLookup.get( fieldName );
+        return values[index];
+    }
+
+    @Override
+    public Record record()
+    {
+        return this;
+    }
+
+    @Override
+    public Value value( String key )
+    {
+        Integer fieldIndex = keyIndexLookup.get( key );
 
         if ( fieldIndex == null )
         {
@@ -65,14 +79,20 @@ public class SimpleRecord implements Record
         }
         else
         {
-            return fields[fieldIndex];
+            return values[fieldIndex];
         }
     }
 
     @Override
-    public Iterable<String> fieldNames()
+    public int numberOfFields()
     {
-        return fieldLookup.keySet();
+        return values.length;
+    }
+
+    @Override
+    public Iterable<String> keys()
+    {
+        return keys;
     }
 
     @Override
@@ -89,23 +109,15 @@ public class SimpleRecord implements Record
 
         SimpleRecord that = (SimpleRecord) o;
 
-        if ( !fieldLookup.equals( that.fieldLookup ) )
-        {
-            return false;
-        }
-        if ( !Arrays.equals( fields, that.fields ) )
-        {
-            return false;
-        }
+        return keys.equals( that.keys ) && Arrays.equals( values, that.values );
 
-        return true;
     }
 
     @Override
     public int hashCode()
     {
-        int result = fieldLookup.hashCode();
-        result = 31 * result + Arrays.hashCode( fields );
+        int result = keys.hashCode();
+        result = 31 * result + Arrays.hashCode( values );
         return result;
     }
 }
