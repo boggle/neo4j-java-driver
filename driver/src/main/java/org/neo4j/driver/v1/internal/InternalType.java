@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neo4j.driver.internal;
+package org.neo4j.driver.v1.internal;
 
-import org.neo4j.driver.v1.Type;
+import org.neo4j.driver.v1.CypherType;
 
 /**
- * Additional utility methods for {@link Type} that currently are not exposed on the
+ * Additional utility methods for {@link CypherType} that currently are not exposed on the
  * external API
  */
-public interface InternalType extends Type
+public interface InternalType extends CypherType
 {
     /**
      * @return true if this type does not include null

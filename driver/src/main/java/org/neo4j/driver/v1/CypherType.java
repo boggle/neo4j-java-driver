@@ -25,9 +25,9 @@ import java.util.List;
  *
  * @see Value
  * @see Values
- * @see Types
+ * @see CypherTypes
  */
-public interface Type
+public interface CypherType
 {
     /**
      * @return the literal type name
@@ -37,7 +37,7 @@ public interface Type
     /**
      * @return all type parameters (currently only used by LIST)
      */
-    List<Type> parameters();
+    List<CypherType> parameters();
 
     /**
      * @return true if this type includes null
@@ -47,7 +47,7 @@ public interface Type
     /**
      * @return nullable type of this type, i.e. the same type but including null
      */
-    Type nullableType();
+    CypherType nullableType();
 
     /**
      * Test if this type is a super type of another type
@@ -55,5 +55,5 @@ public interface Type
      * @param otherType the contained type
      * @return true if this type is a super type of otherType
      */
-    boolean contains( Type otherType );
+    boolean contains( CypherType otherType );
 }

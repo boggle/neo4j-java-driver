@@ -21,16 +21,16 @@ package org.neo4j.driver.v1;
 import java.util.Collections;
 import java.util.List;
 
-import org.neo4j.driver.internal.InternalType;
+import org.neo4j.driver.v1.internal.InternalType;
 
 /**
  * Static helper methods for constructing various types.
  *
- * @see Type
+ * @see CypherType
  */
-public final class Types
+public final class CypherTypes
 {
-    private Types()
+    private CypherTypes()
     {
         throw new UnsupportedOperationException( "Must not instantiate" );
     }
@@ -40,7 +40,7 @@ public final class Types
     /**
      * @return the "ANY" type
      */
-    public static Type anyType()
+    public static CypherType any()
     {
         return _anyType();
     }
@@ -83,7 +83,7 @@ public final class Types
      * @param elementType the type of list elements
      * @return a "LIST OF" type
      */
-    public static Type listType( final Type elementType ) {
+    public static CypherType listType( final CypherType elementType ) {
         return _listType( internal( elementType ) );
     }
 
@@ -96,7 +96,7 @@ public final class Types
     /**
      * @return the "MAP" type
      */
-    public static Type mapType()
+    public static CypherType mapType()
     {
         return _mapType();
     }
@@ -132,7 +132,7 @@ public final class Types
     /**
      * @return the "NODE" type
      */
-    public static Type nodeType()
+    public static CypherType nodeType()
     {
         return NODE_TYPE;
     }
@@ -160,7 +160,7 @@ public final class Types
     /**
      * @return the "RELATIONSHIP" type
      */
-    public static Type relationshipType()
+    public static CypherType relationshipType()
     {
         return RELATIONSHIP_TYPE;
     }
@@ -188,7 +188,7 @@ public final class Types
     /**
      * @return the "PATH" type
      */
-    public static Type pathType() { return PATH_TYPE; }
+    public static CypherType pathType() { return PATH_TYPE; }
 
     private static final MaterialType PATH_TYPE = new LeafType()
     {
@@ -213,7 +213,7 @@ public final class Types
     /**
      * @return the "NUMBER" type
      */
-    public static Type numberType()
+    public static CypherType numberType()
     {
         return _numberType();
     }
@@ -249,7 +249,7 @@ public final class Types
     /**
      * @return the "BOOLEAN" type
      */
-    public static Type booleanType()
+    public static CypherType booleanType()
     {
         return BOOLEAN_TYPE;
     }
@@ -277,7 +277,7 @@ public final class Types
     /**
      * @return the "STRING" type
      */
-    public static Type stringType()
+    public static CypherType stringType()
     {
         return STRING_TYPE;
     }
@@ -305,7 +305,7 @@ public final class Types
     /**
      * @return the "INTEGER" type
      */
-    public static Type integerType()
+    public static CypherType integerType()
     {
         return INTEGER_TYPE;
     }
@@ -333,7 +333,7 @@ public final class Types
     /**
      * @return the "FLOAT" type
      */
-    public static Type floatType()
+    public static CypherType floatType()
     {
         return FLOAT_TYPE;
     }
@@ -361,12 +361,12 @@ public final class Types
     /**
      * @return the "VOID" type
      */
-    public static Type voidType()
+    public static CypherType voidType()
     {
         return VOID_TYPE;
     }
 
-    private static final Type VOID_TYPE = new VoidType();
+    private static final CypherType VOID_TYPE = new VoidType();
 
 
     // *** IMPLEMENTATION CLASSES ***
@@ -424,9 +424,9 @@ public final class Types
             return "LIST OF";
         }
 
-        public List<Type> parameters()
+        public List<CypherType> parameters()
         {
-            return Collections.<Type>singletonList( elementType );
+            return Collections.<CypherType>singletonList( elementType );
         }
 
         @Override
@@ -534,7 +534,7 @@ public final class Types
             return nullableConstructor;
         }
 
-        public List<Type> parameters()
+        public List<CypherType> parameters()
         {
             return materialType.parameters();
         }
@@ -641,7 +641,7 @@ public final class Types
 
         public abstract String constructorName();
 
-        public List<Type> parameters()
+        public List<CypherType> parameters()
         {
             return Collections.emptyList();
         }
@@ -659,7 +659,7 @@ public final class Types
         }
 
         @Override
-        public final boolean contains( Type otherType )
+        public final boolean contains( CypherType otherType )
         {
             if ( otherType == null )
             {
@@ -683,7 +683,7 @@ public final class Types
                 return nullableType();
             }
 
-            Type otherMaterialType = otherType.materialType();
+            CypherType otherMaterialType = otherType.materialType();
 
             if ( contains( otherMaterialType ) )
             {
@@ -699,7 +699,7 @@ public final class Types
         }
     }
 
-    private static InternalType internal( Type otherType )
+    private static InternalType internal( CypherType otherType )
     {
         return (InternalType) otherType;
     }

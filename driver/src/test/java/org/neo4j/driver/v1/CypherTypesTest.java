@@ -26,7 +26,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-import org.neo4j.driver.internal.InternalType;
+import org.neo4j.driver.v1.internal.InternalType;
 
 import static java.util.Collections.singletonList;
 
@@ -37,20 +37,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import static org.neo4j.driver.v1.Types.anyType;
-import static org.neo4j.driver.v1.Types.booleanType;
-import static org.neo4j.driver.v1.Types.floatType;
-import static org.neo4j.driver.v1.Types.integerType;
-import static org.neo4j.driver.v1.Types.listType;
-import static org.neo4j.driver.v1.Types.mapType;
-import static org.neo4j.driver.v1.Types.nodeType;
-import static org.neo4j.driver.v1.Types.numberType;
-import static org.neo4j.driver.v1.Types.pathType;
-import static org.neo4j.driver.v1.Types.relationshipType;
-import static org.neo4j.driver.v1.Types.stringType;
-import static org.neo4j.driver.v1.Types.voidType;
+import static org.neo4j.driver.v1.CypherTypes.any;
+import static org.neo4j.driver.v1.CypherTypes.booleanType;
+import static org.neo4j.driver.v1.CypherTypes.floatType;
+import static org.neo4j.driver.v1.CypherTypes.integerType;
+import static org.neo4j.driver.v1.CypherTypes.listType;
+import static org.neo4j.driver.v1.CypherTypes.mapType;
+import static org.neo4j.driver.v1.CypherTypes.nodeType;
+import static org.neo4j.driver.v1.CypherTypes.numberType;
+import static org.neo4j.driver.v1.CypherTypes.pathType;
+import static org.neo4j.driver.v1.CypherTypes.relationshipType;
+import static org.neo4j.driver.v1.CypherTypes.stringType;
+import static org.neo4j.driver.v1.CypherTypes.voidType;
 
-public class TypesTest
+public class CypherTypesTest
 {
     // Whenever adding types, be sure to update these lists of types below
 
@@ -82,7 +82,7 @@ public class TypesTest
 
     private void addMaterialPlainTypes( List<InternalType> types )
     {
-        types.add( internal( anyType() ) );
+        types.add( internal( any() ) );
         types.add( internal( booleanType() ) );
         types.add( internal( stringType() ) );
         types.add( internal( numberType() ) );
@@ -149,7 +149,7 @@ public class TypesTest
         assertThat( floatType().name(), equalTo( "FLOAT" ) );
         assertThat( stringType().name(), equalTo( "STRING" ) );
         assertThat( numberType().name(), equalTo( "NUMBER" ) );
-        assertThat( anyType().name(), equalTo( "ANY" ) );
+        assertThat( any().name(), equalTo( "ANY" ) );
         assertThat( nodeType().name(), equalTo( "NODE" ) );
         assertThat( relationshipType().name(), equalTo( "RELATIONSHIP" ) );
         assertThat( pathType().name(), equalTo( "PATH" ) );
@@ -165,7 +165,7 @@ public class TypesTest
         assertThat( floatType().nullableType().name(), equalTo( "FLOAT?" ) );
         assertThat( stringType().nullableType().name(), equalTo( "STRING?" ) );
         assertThat( numberType().nullableType().name(), equalTo( "NUMBER?" ) );
-        assertThat( anyType().nullableType().name(), equalTo( "ANY?" ) );
+        assertThat( any().nullableType().name(), equalTo( "ANY?" ) );
         assertThat( nodeType().nullableType().name(), equalTo( "NODE?" ) );
         assertThat( relationshipType().nullableType().name(), equalTo( "RELATIONSHIP?" ) );
         assertThat( pathType().nullableType().name(), equalTo( "PATH?" ) );
@@ -179,11 +179,11 @@ public class TypesTest
     @Test
     public void testAnyContainsAllMaterialTypes()
     {
-        for ( Type t : testedMaterialTypes() )
+        for ( CypherType t : testedMaterialTypes() )
         {
             if ( !t.equals( voidType() ) )
             {
-                assertThat( anyType(), containsType( t ) );
+                assertThat( any(), containsType( t ) );
             }
         }
     }
@@ -195,7 +195,7 @@ public class TypesTest
         assertThat( mapType(), containsType( nodeType() ) );
         assertThat( mapType(), containsType( relationshipType() ) );
 
-        for ( Type t : testedMaterialTypes() )
+        for ( CypherType t : testedMaterialTypes() )
         {
             if ( !(t.equals( nodeType() ) || t.equals( relationshipType() ) || t.equals( mapType() )) )
             {
@@ -210,7 +210,7 @@ public class TypesTest
         assertThat( numberType(), containsType( integerType() ) );
         assertThat( numberType(), containsType( floatType() ) );
 
-        for ( Type t : testedMaterialTypes() )
+        for ( CypherType t : testedMaterialTypes() )
         {
             if ( ! ( t.equals( integerType() ) || t.equals( floatType() ) || t.equals( numberType() ) ) )
             {
@@ -222,7 +222,7 @@ public class TypesTest
     @Test
     public void testContainsIsReflexive()
     {
-        for ( Type type : allTestedTypes() )
+        for ( CypherType type : allTestedTypes() )
         {
             assertThat( type, containsType( type ) );
         }
@@ -231,7 +231,7 @@ public class TypesTest
     @Test
     public void shouldComputeMaterialAndNullableTypesCorrectly()
     {
-        for ( Type type : testedMaterialTypes() )
+        for ( CypherType type : testedMaterialTypes() )
         {
             assertFalse( internal( type.nullableType() ).isMaterial() );
             assertTrue( type.nullableType().isNullable() );
@@ -251,9 +251,9 @@ public class TypesTest
     @Test
     public void testNullableAnyContainsEveryOtherType()
     {
-        for ( Type t : allTestedTypes() )
+        for ( CypherType t : allTestedTypes() )
         {
-            assertThat( anyType().nullableType(), containsType( t ) );
+            assertThat( any().nullableType(), containsType( t ) );
         }
     }
 
@@ -261,11 +261,11 @@ public class TypesTest
     @Test
     public void testAnyDoesNotContainNullableTypes()
     {
-        for ( Type t : testedNullableTypes() )
+        for ( CypherType t : testedNullableTypes() )
         {
             if ( ! t.equals( voidType() ) )
             {
-                assertThat( anyType(), not( containsType( t ) ) );
+                assertThat( any(), not( containsType( t ) ) );
             }
         }
     }
@@ -273,7 +273,7 @@ public class TypesTest
     @Test
     public void testAllNonVoidTypesHaveAMaterialType()
     {
-        for ( Type t : allTestedTypes() )
+        for ( CypherType t : allTestedTypes() )
         {
             assertTrue( implies( internal( t ).materialType() == null, voidType().equals( t ) ) );
         }
@@ -282,7 +282,7 @@ public class TypesTest
     @Test
     public void testNullableTypesContainVoid()
     {
-        for ( Type t : testedNullableTypes() )
+        for ( CypherType t : testedNullableTypes() )
         {
             assertThat( t, containsType( voidType() ) );
         }
@@ -291,7 +291,7 @@ public class TypesTest
     @Test
     public void testMaterialTypesDoNotContainVoid()
     {
-        for ( Type t : testedMaterialTypes() )
+        for ( CypherType t : testedMaterialTypes() )
         {
             assertThat( t, not( containsType( voidType() ) ) );
         }
@@ -301,15 +301,15 @@ public class TypesTest
     public void shouldComputeTypeEquality()
     {
         // reflexive
-        for ( Type t : allTestedTypes() )
+        for ( CypherType t : allTestedTypes() )
         {
             assertThat( t, equalTo( t ) );
         }
 
         // symmetric
-        for ( Type t1 : allTestedTypes() )
+        for ( CypherType t1 : allTestedTypes() )
         {
-            for ( Type t2 : allTestedTypes() )
+            for ( CypherType t2 : allTestedTypes() )
             {
                 if ( t1.equals( t2 ) )
                 {
@@ -323,11 +323,11 @@ public class TypesTest
         }
 
         // transitive (if t1 == t2 && t2 == t3 => t1 == t3)
-        for ( Type t1 : allTestedTypes() )
+        for ( CypherType t1 : allTestedTypes() )
         {
-            for ( Type t2 : allTestedTypes() )
+            for ( CypherType t2 : allTestedTypes() )
             {
-                for ( Type t3 : allTestedTypes() )
+                for ( CypherType t3 : allTestedTypes() )
                 {
                     boolean p1 = t1.equals( t2 );
                     boolean p2 = t2.equals( t3 );
@@ -358,7 +358,7 @@ public class TypesTest
     @Test
     public void testListTypesHaveSingleParameter()
     {
-        for ( Type t : allTestedTypes() )
+        for ( CypherType t : allTestedTypes() )
         {
             if ( isListType( t ) )
             {
@@ -370,7 +370,7 @@ public class TypesTest
     @Test
     public void testNonListTypesDontHaveParameters()
     {
-        for ( Type t : allTestedTypes() )
+        for ( CypherType t : allTestedTypes() )
         {
             if ( !isListType( t ) )
             {
@@ -438,7 +438,7 @@ public class TypesTest
         {
             for ( InternalType t2 : allTestedTypes() )
             {
-                Type joinedType = t1.join( t2 );
+                CypherType joinedType = t1.join( t2 );
                 assertThat( joinedType, containsType( t1 ) );
                 assertThat( joinedType, containsType( t2 ) );
             }
@@ -447,18 +447,18 @@ public class TypesTest
         // join with any: ANY? is the top-most type
         for ( InternalType t : allTestedTypes() )
         {
-            assertThat( internal( anyType().nullableType() ).join( t ), equalTo( anyType().nullableType() ) );
+            assertThat( internal( any().nullableType() ).join( t ), equalTo( any().nullableType() ) );
         }
 
         // join with any: ANY is the top-most material type
         for ( InternalType t : testedMaterialTypes() )
         {
-            assertThat( internal( anyType() ).join( t ), equalTo( anyType() ) );
+            assertThat( internal( any() ).join( t ), equalTo( any() ) );
         }
 
         // numbers
         assertThat( internal( integerType() ).join( internal( floatType() ) ), equalTo( numberType() ) );
-        assertThat( internal( numberType() ).join( internal( booleanType() ) ), equalTo( anyType() ) );
+        assertThat( internal( numberType() ).join( internal( booleanType() ) ), equalTo( any() ) );
 
         // maps
         assertThat( internal( nodeType() ).join( internal( mapType() ) ), equalTo( mapType() ) );
@@ -477,9 +477,9 @@ public class TypesTest
         }
     }
 
-    private Matcher<Type> containsType( final Type subType )
+    private Matcher<CypherType> containsType( final CypherType subType )
     {
-        return new BaseMatcher<Type>() {
+        return new BaseMatcher<CypherType>() {
 
             @Override
             public void describeTo( Description description )
@@ -491,9 +491,9 @@ public class TypesTest
             @Override
             public boolean matches( Object item )
             {
-                if ( item instanceof Type )
+                if ( item instanceof CypherType )
                 {
-                    Type superType = (Type) item;
+                    CypherType superType = (CypherType) item;
                     return superType.contains( subType );
                 }
                 else
@@ -504,7 +504,7 @@ public class TypesTest
         };
     }
 
-    private static InternalType internal( Type otherType )
+    private static InternalType internal( CypherType otherType )
     {
         return (InternalType) otherType;
     }
@@ -514,8 +514,8 @@ public class TypesTest
         return !condition || consequence;
     }
 
-    private static boolean isListType( Type t )
+    private static boolean isListType( CypherType t )
     {
-        return !voidType().equals( t ) && listType( anyType().nullableType() ).nullableType().contains( t );
+        return !voidType().equals( t ) && listType( any().nullableType() ).nullableType().contains( t );
     }
 }
