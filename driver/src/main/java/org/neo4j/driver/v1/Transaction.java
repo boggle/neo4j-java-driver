@@ -65,7 +65,4 @@ public interface Transaction extends Resource, StatementRunner
      * </pre>
      */
     void failure();
-
-    @Override
-    void close();
 }

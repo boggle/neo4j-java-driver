@@ -46,7 +46,4 @@ public interface Session extends Resource, StatementRunner
      * @return a new transaction
      */
     Transaction beginTransaction();
-
-    @Override
-    void close();
 }

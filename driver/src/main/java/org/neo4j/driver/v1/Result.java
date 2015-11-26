@@ -112,7 +112,4 @@ public interface Result extends RecordView, Resource
      * @return a summary for the whole query
      */
     ResultSummary summarize();
-
-    @Override
-    void close();
 }

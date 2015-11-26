@@ -33,4 +33,10 @@ public interface Resource extends AutoCloseable
      * @return true if the resource is open
      */
     boolean isOpen();
+
+    /**
+     * @throws IllegalStateException if already closed
+     */
+    @Override
+    void close();
 }
